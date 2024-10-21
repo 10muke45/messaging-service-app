@@ -79,6 +79,7 @@ button:hover {
     border-bottom: 1px solid #ddd;
 }
 
+/* Message Input */
 .message-input {
     display: flex;
     padding: 10px;
@@ -113,15 +114,17 @@ button:hover {
     border-radius: 10px;
     max-width: 70%;
     word-wrap: break-word;
+    clear: both; /* Ensure each message is on a new line */
 }
 
 .message.other {
     background-color: #f1f0f0;
     text-align: left;
+    float: left; /* Aligns other user's messages to the left */
 }
 
 .message.self {
     background-color: #dcf8c6;
     text-align: right;
-    margin-left: auto;
+    float: right; /* Aligns current user's messages to the right */
 }

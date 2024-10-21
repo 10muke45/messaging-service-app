@@ -118,8 +118,17 @@ document.addEventListener("DOMContentLoaded", function() {
             const chatBox = document.getElementById("chatBox");
             const message = JSON.parse(event.data);
 
-            // Display messages without using "You"
-            chatBox.innerHTML += `<div><strong>${message.sender}:</strong> ${message.content}</div>`;
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+            
+            if (message.sender === currentUsername) {
+                messageDiv.classList.add("self");
+            } else {
+                messageDiv.classList.add("other");
+            }
+
+            messageDiv.innerHTML = `<strong>${message.sender}:</strong> ${message.content}`;
+            chatBox.appendChild(messageDiv);
         };
 
         ws.onerror = function(error) {
@@ -171,7 +180,17 @@ document.addEventListener("DOMContentLoaded", function() {
                 chatBox.innerHTML = ""; // Clear previous chat
 
                 messages.forEach(message => {
-                    chatBox.innerHTML += `<div><strong>${message.sender}:</strong> ${message.content}</div>`;
+                    const messageDiv = document.createElement("div");
+                    messageDiv.classList.add("message");
+
+                    if (message.sender === currentUsername) {
+                        messageDiv.classList.add("self");
+                    } else {
+                        messageDiv.classList.add("other");
+                    }
+
+                    messageDiv.innerHTML = `<strong>${message.sender}:</strong> ${message.content}`;
+                    chatBox.appendChild(messageDiv);
                 });
             } else {
                 alert("Failed to load message history.");
@@ -197,7 +216,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     // Display sent message immediately in the chatbox
                     const chatBox = document.getElementById("chatBox");
-                    chatBox.innerHTML += `<div><strong>${currentUsername}:</strong> ${messageContent}</div>`;
+                    const messageDiv = document.createElement("div");
+                    messageDiv.classList.add("message", "self");
+                    messageDiv.innerHTML = `<strong>${currentUsername}:</strong> ${messageContent}`;
+                    chatBox.appendChild(messageDiv);
+
                     document.getElementById("messageInput").value = ""; // Clear the input field
                 } else {
                     alert("WebSocket connection is not open.");
