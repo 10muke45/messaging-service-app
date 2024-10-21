@@ -7,34 +7,24 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div>
-        <h3>Select a User to Chat With:</h3>
-        <ul id="userList"></ul> <!-- To display the list of users -->
-    </div>
-
-    <div>
-        <h3>Messages with <span id="chatWith"></span>:</h3>
-        <div id="chatBox"></div>
-    </div>
-
-    <form id="messageForm">
-        <input type="text" id="messageInput" placeholder="Enter your message" required />
-        <button type="submit">Send</button>
-    </form>
     <div class="chat-container">
-        <div class="chat-box" id="chatBox"></div>
+        <div class="sidebar">
+            <h3>Select a User to Chat With:</h3>
+            <ul id="userList"></ul> <!-- To display the list of users -->
+        </div>
 
-        <form id="messageForm">
-            <input type="text" id="receiver" placeholder="Recipient Username" required>
-            <input type="text" id="messageInput" placeholder="Type your message" required>
-            <button type="submit">Send</button>
-        </form>
+        <div class="chat-area">
+            <div class="chat-header">
+                <h3>Messages with <span id="chatWith"></span>:</h3>
+            </div>
+            <div class="chat-box" id="chatBox"></div>
+            <form id="messageForm" class="message-input">
+                <input type="text" id="messageInput" placeholder="Enter your message" required />
+                <button type="submit">Send</button>
+            </form>
+        </div>
     </div>
-
 
     <script src="app.js"></script>
 </body>
 </html>
-
-
-

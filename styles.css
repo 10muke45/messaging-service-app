@@ -1,8 +1,13 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
 }
 
 .container {
@@ -40,30 +45,83 @@ button:hover {
     background-color: #218838;
 }
 
+/* Chat Area Layout */
 .chat-container {
-    max-width: 600px;
-    margin: 50px auto;
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 25%;
+    background-color: #f9f9f9;
     padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #ddd;
+}
+
+.chat-area {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    text-align: center;
 }
 
 .chat-box {
-    height: 300px;
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #fff;
     overflow-y: auto;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
 }
 
-#messageForm input {
-    width: calc(100% - 120px);
+.message-input {
+    display: flex;
     padding: 10px;
+    border-top: 1px solid #ddd;
 }
 
-#messageForm button {
-    width: 100px;
-    margin-left: 10px;
+.message-input input {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+.message-input button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.message-input button:hover {
+    background-color: #218838;
+}
+
+/* Message Alignment */
+.message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.message.other {
+    background-color: #f1f0f0;
+    text-align: left;
+}
+
+.message.self {
+    background-color: #dcf8c6;
+    text-align: right;
+    margin-left: auto;
 }

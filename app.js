@@ -16,18 +16,25 @@ function parseJwt(token) {
     return JSON.parse(jsonPayload);
 }
 
-const currentUsername = parseJwt(token).username; // Extracted username
+let currentUsername; // Declare currentUsername for global use
+
+if (token) {
+    currentUsername = parseJwt(token).username; // Extracted username if token exists
+}
 
 // Function to make API calls with JWT token
 async function apiCall(endpoint, method, body = null) {
     const headers = {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}` // Include the JWT token in the headers
     };
+
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`; // Include the JWT token in the headers if available
+    }
 
     const options = {
         method: method,
-        headers: headers
+        headers: headers,
     };
 
     if (body) {
@@ -38,47 +45,12 @@ async function apiCall(endpoint, method, body = null) {
     return response;
 }
 
+// Event listeners for login and register forms
 document.addEventListener("DOMContentLoaded", function() {
-    async function fetchUsers() {
-        const res = await apiCall("/users", "GET");
-
-        if (res.ok) {
-            const data = await res.json();
-            const userList = document.getElementById("userList");
-
-            data.data.forEach(user => {
-                const li = document.createElement("li");
-                li.textContent = user;
-                li.addEventListener("click", () => {
-                    selectUser(user);
-                });
-                userList.appendChild(li);
-            });
-        } else {
-            alert("Failed to load user list.");
-        }
-    }
-
-    async function selectUser(user) {
-        localStorage.setItem("selectedUser", user);
-        document.getElementById("chatWith").textContent = user;
-
-        const res = await apiCall(`/messages?username=${user}`, "GET");
-
-        if (res.ok) {
-            const messages = await res.json();
-            const chatBox = document.getElementById("chatBox");
-            chatBox.innerHTML = ""; // Clear previous chat
-
-            messages.forEach(message => {
-                chatBox.innerHTML += `<div><strong>${message.sender}:</strong> ${message.content}</div>`;
-            });
-        } else {
-            alert("Failed to load message history.");
-        }
-    }
-
     const registerForm = document.getElementById("registerForm");
+    const loginForm = document.getElementById("loginForm");
+
+    // Registration event handler
     if (registerForm) {
         registerForm.addEventListener("submit", async function(event) {
             event.preventDefault();
@@ -101,10 +73,10 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    const loginForm = document.getElementById("loginForm");
+    // Login event handler
     if (loginForm) {
         loginForm.addEventListener("submit", async function(event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent the default form submission behavior
             const username = document.getElementById("loginUsername").value;
             const password = document.getElementById("loginPassword").value;
 
@@ -115,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     const data = await res.json();
                     token = data.token;
                     localStorage.setItem("authToken", token);
+                    currentUsername = parseJwt(token).username; // Update currentUsername after login
                     window.location.href = "chat.html"; // Redirect to chat
                 } else {
                     const errorData = await res.json();
@@ -127,6 +100,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // If the user is already on the chat page, load the chat functionality
     if (window.location.pathname.endsWith("chat.html")) {
         if (!token) {
             alert("You are not authenticated. Please log in.");
@@ -158,6 +132,53 @@ document.addEventListener("DOMContentLoaded", function() {
             alert("WebSocket connection closed.");
         };
 
+        // Fetch and display the list of users when on the chat page
+        async function fetchUsers() {
+            const res = await apiCall("/users", "GET");
+
+            if (res.ok) {
+                const data = await res.json();
+                const userList = document.getElementById("userList");
+
+                if (!userList) {
+                    console.error("User list element not found!");
+                    return;
+                }
+
+                data.data.forEach(user => {
+                    const li = document.createElement("li");
+                    li.textContent = user;
+                    li.addEventListener("click", () => {
+                        selectUser(user);
+                    });
+                    userList.appendChild(li);
+                });
+            } else {
+                alert("Failed to load user list.");
+            }
+        }
+
+        // Selecting a user for chat
+        async function selectUser(user) {
+            localStorage.setItem("selectedUser", user);
+            document.getElementById("chatWith").textContent = user;
+
+            const res = await apiCall(`/messages?username=${user}`, "GET");
+
+            if (res.ok) {
+                const messages = await res.json();
+                const chatBox = document.getElementById("chatBox");
+                chatBox.innerHTML = ""; // Clear previous chat
+
+                messages.forEach(message => {
+                    chatBox.innerHTML += `<div><strong>${message.sender}:</strong> ${message.content}</div>`;
+                });
+            } else {
+                alert("Failed to load message history.");
+            }
+        }
+
+        // Handle sending messages via WebSocket
         const messageForm = document.getElementById("messageForm");
         if (messageForm) {
             messageForm.addEventListener("submit", function(event) {
