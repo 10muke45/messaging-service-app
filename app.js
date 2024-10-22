@@ -109,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         const ws = new WebSocket(`ws://tjhn8rgw-8080.inc1.devtunnels.ms/ws?token=${token}`);
+        
 
         ws.onopen = function() {
             console.log("WebSocket connection established.");
